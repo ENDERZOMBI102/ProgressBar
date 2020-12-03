@@ -3,10 +3,10 @@ import wx
 from .UnitBase import UnitBase
 
 
-class Unit( UnitBase ):
+class NormalUnit( UnitBase ):
 
 	def __init__(self, pos: wx.Point, speed: int):
-		super(Unit, self).__init__(
+		super( NormalUnit, self ).__init__(
 			pos=pos,
 			speed=speed,
 			color=wx.Colour('#0390FC')

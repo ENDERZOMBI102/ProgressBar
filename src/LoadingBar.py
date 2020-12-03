@@ -3,7 +3,7 @@ from typing import Tuple, Union
 import wx
 
 
-class Bar(wx.Frame):
+class LoadingBar(wx.Frame):
 
 	initDrag: Union[ Tuple[ int, int ], None ] = None
 	score: int = 0
@@ -12,13 +12,13 @@ class Bar(wx.Frame):
 	recordTxt: wx.StaticText
 
 	def __init__(self):
-		super(Bar, self).__init__(
+		super(LoadingBar, self).__init__(
 			parent=None,
 			size=wx.Size(400, 60),
 			pos=wx.Point(200, 500),
 			style=wx.BORDER_NONE | wx.FRAME_NO_TASKBAR
 		)
-		self.darkmode = True
+		self.darkmode = False
 		self.scoreTxt = wx.StaticText(
 			parent=self,
 			pos=wx.Point(20, 10),
@@ -35,9 +35,6 @@ class Bar(wx.Frame):
 		self.Bind( wx.EVT_LEFT_UP, self.OnMouseClick )
 		self.Bind( wx.EVT_MOTION, self.OnMouseMove )
 		self.Bind( wx.EVT_KEY_DOWN, self.OnKeyDown )
-
-	def UpdateScore( self ):
-		self.scoreTxt.SetLabel(f'score: {self.score}')
 
 	def IsTouching( self, other: wx.Frame ):
 		return self.GetScreenRect().Intersects( other.GetScreenRect() )
@@ -73,8 +70,11 @@ class Bar(wx.Frame):
 		else:
 			self.Destroy()
 
+	def UpdateScore( self ):
+		self.scoreTxt.SetLabel(f'score: {self.score}')
+
 	def UpdateRecord( self ):
-		self.scoreTxt.SetLabel( f'record: {self.score}' )
+		self.recordTxt.SetLabel( f'record: {self.record}' )
 
 	def UpdateColor( self ):
 		if self.darkmode:
@@ -98,10 +98,10 @@ class Bar(wx.Frame):
 			self.initDrag = None
 
 	def OnMouseMove( self, evt: wx.MouseEvent ):
-		if evt.Dragging() and (self.initDrag is not None):
-			# if self.GetPosition().Get()[ 1 ] + ( evt.GetY() - self.initDrag[ 1 ] ) < 200:
-			# 	return
-			self.SetPosition(
+		if evt.Dragging() and ( self.initDrag is not None ):
+			if self.GetPosition().Get()[ 1 ] + ( evt.GetY() - self.initDrag[ 1 ] ) < 200:
+				return
+			self.Move(
 				wx.Point(
 					self.GetPosition().Get()[ 0 ] + ( evt.GetX() - self.initDrag[ 0 ] ),
 					self.GetPosition().Get()[ 1 ] + ( evt.GetY() - self.initDrag[ 1 ] )

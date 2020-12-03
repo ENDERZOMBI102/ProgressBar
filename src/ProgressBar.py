@@ -1,5 +1,4 @@
 from time import time
-from typing import List
 import random
 import json
 from pathlib import Path
@@ -7,18 +6,17 @@ from pathlib import Path
 import wx
 from wx.lib.mixins.inspection import InspectionMixin
 
-from Bar import Bar
-from Event import EVT_TICK, TickEvent
+from LoadingBar import LoadingBar
+from Event import TickEvent
 from units.UnitBase import UnitBase
-from units.Unit import Unit
+from units.NormalUnit import NormalUnit
 from units.WrongUnit import WrongUnit
 from units.ErrorUnit import ErrorUnit
 
 
 class App(wx.App, InspectionMixin):
 
-	unit: Bar
-	units: List[UnitBase] = []
+	unit: LoadingBar
 	spawnTimer = time()
 	playing: bool = True
 
@@ -27,48 +25,54 @@ class App(wx.App, InspectionMixin):
 		if not cfg.exists():
 			cfg.touch()
 			with cfg.open('w') as file:
-				json.dump({'record': 0}, file)
+				json.dump({'record': 0, 'darkmode': False}, file)
 
 	def OnInit(self):
-		self.unit = Bar()
+		self.Init()
+		# self.ShowInspectionTool()
+		self.unit = LoadingBar()
 		with open('./ProgressBar.cfg', 'r') as file:
-			self.unit.record = int( json.load(file)['record'] )
+			options = json.load(file)
+			self.unit.record = options[ 'record' ]
+			self.unit.darkmode = options[ 'darkmode' ]
+		self.unit.UpdateColor()
+		self.unit.UpdateRecord()
 		self.unit.Show()
 		wx.CallLater( 100, self.Tick )
 		return True
 
 	def OnExit(self):
+		with open('./ProgressBar.cfg', 'w') as file:
+			json.dump({'record': self.unit.record, 'darkmode': self.unit.darkmode}, file)
 		return True
 
 	def Tick( self ):
 		if self.playing:
-			if time() - self.spawnTimer > random.randrange(0, 4):
+			if time() - self.spawnTimer > random.randrange(0, 4) * random.randrange(1, 3):
 				self.spawnTimer = time()
 				self.Spawn()
-			# remove destroyed units
-			for obj in self.units:
-				if obj.removed:
-					del obj
 			# move units
-			for obj in self.units:
-				if not obj.removed:
-					wx.PostEvent(obj, TickEvent() )
+			for obj in self.unit.GetChildren():
+				if isinstance(obj, UnitBase):
+					if not obj.removed:
+						wx.PostEvent( obj, TickEvent() )
 		wx.CallLater( 10, self.Tick )
 
 	def KillUnits( self ):
-		for i in self.units:
-			if not i.removed:
-				i.Destroy()
-		self.units.clear()
+		for obj in self.unit.GetChildren():
+			if isinstance( obj, UnitBase ):
+				if not obj.removed:
+					obj.Destroy()
 
 	def Spawn( self ):
-		n = random.randrange(100)
-		if n > 90:
-			self.units.append( ErrorUnit( randPos(), random.randrange( 2, 4 ) ) )
-		elif n > 70:
-			self.units.append( WrongUnit( randPos(), random.randrange( 2, 4 ) ) )
-		elif n > 40:
-			self.units.append( Unit( randPos(), random.randrange( 2, 4 ) ) )
+		if len( self.unit.GetChildren() ) < 30:
+			n = random.randrange(100)
+			if n > 90:
+				ErrorUnit( randPos(), random.randrange( 2, 4 ) )
+			elif n > 70:
+				WrongUnit( randPos(), random.randrange( 2, 4 ) )
+			elif n > 40:
+				NormalUnit( randPos(), random.randrange( 2, 4 ) )
 
 
 def randPos() -> wx.Point:
