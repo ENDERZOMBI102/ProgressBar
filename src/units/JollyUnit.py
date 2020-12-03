@@ -33,9 +33,9 @@ class JollyUnit(UnitBase):
 			elif self.action == 3:  # fill
 				self.SetBackgroundColour( wx.Colour('#2FF5F1') )
 			elif self.action == 4:  # multi
-				self.SetBackgroundColour()
+				self.SetBackgroundColour( wx.Colour('#2FF5F1') )    # TODO: missing multi and malus, using placeholder colors
 			else:  # malus
-				self.SetBackgroundColour()
+				self.SetBackgroundColour( wx.Colour('#2FF5F1') )
 		super(JollyUnit, self).OnTick(evt)
 
 	def OnBarTouch( self ):
@@ -44,11 +44,11 @@ class JollyUnit(UnitBase):
 		elif self.action == 1:
 			self.bar.score -= 5
 		elif self.action == 2:
-			pass
+			self.bar.EndGame()
 		elif self.action == 3:
 			self.bar.score += 100
 		elif self.action == 4:
-			pass
+			pass  # TODO: missing multi and malus
 		else:
 			pass
 		self.bar.UpdateScore()
