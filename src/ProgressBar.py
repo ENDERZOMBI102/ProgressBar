@@ -12,6 +12,7 @@ from units.FillUnit import FillUnit
 from units.JollyUnit import JollyUnit
 from units.MalusUnit import MalusUnit
 from units.MultiUnit import MultiUnit
+from units.NullUnit import NullUnit
 from units.UnitBase import UnitBase
 from units.NormalUnit import NormalUnit
 from units.WrongUnit import WrongUnit
@@ -86,8 +87,13 @@ class App(wx.App, InspectionMixin):
 					pos=randPos(),
 					speed=random.randrange( 2, 4 )
 				)
-			elif n > 30:
+			elif n > 33:
 				MalusUnit(
+					pos=randPos(),
+					speed=random.randrange( 2, 4 )
+				)
+			elif n > 26:
+				NullUnit(
 					pos=randPos(),
 					speed=random.randrange( 2, 4 )
 				)
