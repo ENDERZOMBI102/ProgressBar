@@ -95,7 +95,7 @@ class App(wx.App, InspectionMixin):
 				MultiUnit(
 					pos=randPos(),
 					speed=random.randrange( 2, 4 ),
-					scoreMultiplier=random.randrange( 0, 3 )
+					scoreMultiplier=random.randrange( 1, 3 )
 				)
 			elif n > 13:
 				JollyUnit(
