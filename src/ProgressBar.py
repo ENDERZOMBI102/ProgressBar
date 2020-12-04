@@ -10,6 +10,8 @@ from LoadingBar import LoadingBar
 from Event import TickEvent
 from units.FillUnit import FillUnit
 from units.JollyUnit import JollyUnit
+from units.MalusUnit import MalusUnit
+from units.MultiUnit import MultiUnit
 from units.UnitBase import UnitBase
 from units.NormalUnit import NormalUnit
 from units.WrongUnit import WrongUnit
@@ -83,6 +85,17 @@ class App(wx.App, InspectionMixin):
 				NormalUnit(
 					pos=randPos(),
 					speed=random.randrange( 2, 4 )
+				)
+			elif n > 30:
+				MalusUnit(
+					pos=randPos(),
+					speed=random.randrange( 2, 4 )
+				)
+			elif n > 20:
+				MultiUnit(
+					pos=randPos(),
+					speed=random.randrange( 2, 4 ),
+					scoreMultiplier=random.randrange( 0, 3 )
 				)
 			elif n > 13:
 				JollyUnit(
