@@ -8,7 +8,7 @@ from .UnitBase import UnitBase
 class JollyUnit(UnitBase):
 
 	action: int = 0  # 0 = normal, 1 = wrong, 2 = error, 3 = fill, 4 = multi, 5 = malus
-	changeActionTime: float
+	changeActionTime: float = None
 
 	def __init__(self, pos: wx.Point, speed: int, initialState=0):
 		super( JollyUnit, self ).__init__(
@@ -16,11 +16,10 @@ class JollyUnit(UnitBase):
 			speed=speed,
 			color=wx.Colour('#0390FC')
 		)
-		self.changeActionTime = time()
 		self.action = initialState
 
 	def OnTick( self, evt ):
-		if time() - self.changeActionTime > 30:
+		if ( self.changeActionTime is None ) or ( time() - self.changeActionTime > 3 ):
 			if self.action == 5:
 				self.action = 0
 			else:
@@ -32,12 +31,13 @@ class JollyUnit(UnitBase):
 			elif self.action == 2:  # error
 				self.SetBackgroundColour( wx.ColourDatabase().Find('RED') )
 			elif self.action == 3:  # fill
-				self.SetBackgroundColour( wx.Colour('#2FF5F1') )
+				self.SetBackgroundColour( wx.Colour('#37ED8B') )
 			elif self.action == 4:  # multi
-				self.SetBackgroundColour( wx.Colour('#2FF5F1') )    # TODO: missing multi and malus, using placeholder colors
+				self.SetBackgroundColour( wx.Colour('#9DEFF2') )
 			else:  # malus
-				self.SetBackgroundColour( wx.Colour('#2FF5F1') )
+				self.SetBackgroundColour( wx.Colour('#D531E0') )
 			self.Refresh()
+			self.changeActionTime = time()
 		super(JollyUnit, self).OnTick(evt)
 
 	def OnBarTouch( self ):
@@ -51,9 +51,9 @@ class JollyUnit(UnitBase):
 		elif self.action == 3:
 			self.bar.score += 100
 		elif self.action == 4:
-			pass  # TODO: missing multi and malus
+			self.bar.score += 20
 		else:
-			pass
+			self.bar.score -= 5
 		self.bar.UpdateScore()
 		self.Destroy()
 
