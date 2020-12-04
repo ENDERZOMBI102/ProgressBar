@@ -8,6 +8,8 @@ from wx.lib.mixins.inspection import InspectionMixin
 
 from LoadingBar import LoadingBar
 from Event import TickEvent
+from units.FillUnit import FillUnit
+from units.JollyUnit import JollyUnit
 from units.UnitBase import UnitBase
 from units.NormalUnit import NormalUnit
 from units.WrongUnit import WrongUnit
@@ -68,11 +70,31 @@ class App(wx.App, InspectionMixin):
 		if len( self.unit.GetChildren() ) < 30:
 			n = random.randrange(100)
 			if n > 90:
-				ErrorUnit( randPos(), random.randrange( 2, 4 ) )
+				ErrorUnit(
+					pos=randPos(),
+					speed=random.randrange( 2, 4 )
+				)
 			elif n > 70:
-				WrongUnit( randPos(), random.randrange( 2, 4 ) )
+				WrongUnit(
+					pos=randPos(),
+					speed=random.randrange( 2, 4 )
+				)
 			elif n > 40:
-				NormalUnit( randPos(), random.randrange( 2, 4 ) )
+				NormalUnit(
+					pos=randPos(),
+					speed=random.randrange( 2, 4 )
+				)
+			elif n > 13:
+				JollyUnit(
+					pos=randPos(),
+					speed=random.randrange( 2, 4 ),
+					initialState=random.randrange( 0, 5 )
+				)
+			elif n > 9:
+				FillUnit(
+					pos=randPos(),
+					speed=random.randrange( 2, 4 )
+				)
 
 
 def randPos() -> wx.Point:
