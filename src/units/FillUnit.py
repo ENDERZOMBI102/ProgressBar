@@ -11,7 +11,7 @@ class FillUnit(UnitBase):
 		super( FillUnit, self ).__init__(
 			pos=pos,
 			speed=speed,
-			color=wx.Colour('#2FF5F1')
+			color=wx.Colour('#37ED8B')
 		)
 
 	def OnBarTouch( self ):
