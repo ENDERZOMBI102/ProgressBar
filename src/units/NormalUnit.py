@@ -14,6 +14,6 @@ class NormalUnit( UnitBase ):
 
 	def OnBarTouch( self ):
 		if self.bar.IsScore(self):
-			self.bar.score += 2
+			self.bar.score += 5
 			self.bar.UpdateScore()
 		self.Destroy()
