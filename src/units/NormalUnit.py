@@ -9,11 +9,12 @@ class NormalUnit( UnitBase ):
 		super( NormalUnit, self ).__init__(
 			pos=pos,
 			speed=speed,
-			color=wx.Colour('#0390FC')
+			color=wx.GetApp().GetColor('#0390FC')
 		)
 
 	def OnBarTouch( self ):
-		if self.bar.IsScore(self):
-			self.bar.score += 5
-			self.bar.UpdateScore()
-		self.Destroy()
+		if self.loadBar.IsScore(self.bbox):
+			self.loadBar.score += 5
+			self.Remove()
+		else:
+			self.Kill()

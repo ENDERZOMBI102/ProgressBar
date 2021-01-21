@@ -1,5 +1,3 @@
-from time import time
-
 import wx
 
 from .UnitBase import UnitBase
@@ -11,13 +9,14 @@ class MultiUnit(UnitBase):
 		super( MultiUnit, self ).__init__(
 			pos=pos,
 			speed=speed,
-			color=wx.Colour('#9DEFF2')
+			color=wx.GetApp().GetColor('#9DEFF2')
 		)
 		self.score = 5 * scoreMultiplier
 
 	def OnBarTouch( self ):
-		if self.bar.IsScore(self):
-			self.bar.score += self.score
-			self.bar.UpdateScore()
-		self.Destroy()
+		if self.loadBar.IsScore(self.bbox):
+			self.loadBar.score += self.score
+			self.Remove()
+		else:
+			self.Kill()
 

@@ -9,9 +9,8 @@ class ErrorUnit( UnitBase ):
 		super(ErrorUnit, self).__init__(
 			pos=pos,
 			speed=speed,
-			color=wx.ColourDatabase().Find('RED')
+			color=wx.GetApp().GetColor('RED')
 		)
 
 	def OnBarTouch( self ):
-		if self.bar.IsScore( self ):
-			self.bar.EndGame()
+		self.loadBar.EndGame()

@@ -6,10 +6,11 @@ import wx
 class LoadingBar(wx.Frame):
 
 	initDrag: Union[ Tuple[ int, int ], None ] = None
-	score: int = 0
 	record: int = 0
+	score: int = 0
 	scoreTxt: wx.StaticText
 	recordTxt: wx.StaticText
+	limit: bool = True
 
 	def __init__(self):
 		super(LoadingBar, self).__init__(
@@ -35,11 +36,13 @@ class LoadingBar(wx.Frame):
 		self.Bind( wx.EVT_LEFT_UP, self.OnMouseClick )
 		self.Bind( wx.EVT_MOTION, self.OnMouseMove )
 		self.Bind( wx.EVT_KEY_DOWN, self.OnKeyDown )
+		self.Show()
+		self.Raise()
 
-	def IsTouching( self, other: wx.Frame ):
-		return self.GetScreenRect().Intersects( other.GetScreenRect() )
+	def IsTouching( self, other: wx.Rect ):
+		return self.GetScreenRect().Intersects( other )
 
-	def IsScore( self, other: wx.Frame ):
+	def IsScore( self, other: wx.Rect ):
 		if other.GetPosition().Get()[ 1 ] > self.GetPosition().Get()[ 1 ]:
 			return False
 		return True
@@ -47,7 +50,7 @@ class LoadingBar(wx.Frame):
 	def EndGame( self ):
 		self.SetPosition( wx.Point(0, wx.GetDisplaySize().Get()[1] + 200) )
 		wx.GetApp().playing = False
-		wx.GetApp().KillUnits()
+		wx.GetApp().units.clear()
 		newRecord = self.score > self.record
 		msg = f'Final Score: {self.score}\nRecord: {self.record}'
 		if newRecord:
@@ -68,7 +71,11 @@ class LoadingBar(wx.Frame):
 			self.CenterOnScreen()
 			wx.GetApp().playing = True
 		else:
-			self.Destroy()
+			wx.GetApp().Close()
+
+	def OnTick( self ):
+		self.UpdateScore()
+		self.UpdateRecord()
 
 	def UpdateScore( self ):
 		self.scoreTxt.SetLabel(f'score: {self.score}')
@@ -78,18 +85,22 @@ class LoadingBar(wx.Frame):
 
 	def UpdateColor( self ):
 		if self.darkmode:
-			self.SetBackgroundColour( wx.Colour( '#202120' ) )
-			self.scoreTxt.SetForegroundColour( wx.Colour( '#F1EEDD' ) )
-			self.recordTxt.SetForegroundColour( wx.Colour( '#F1EEDD' ) )
+			self.SetBackgroundColour( wx.GetApp().GetColor( '#202120' ) )
+			self.scoreTxt.SetForegroundColour( wx.GetApp().GetColor( '#F1EEDD' ) )
+			self.recordTxt.SetForegroundColour( wx.GetApp().GetColor( '#F1EEDD' ) )
 		else:
-			self.SetBackgroundColour( wx.Colour( '#F1EEDD' ) )
-			self.scoreTxt.SetForegroundColour( wx.Colour( '#202120' ) )
-			self.recordTxt.SetForegroundColour( wx.Colour( '#202120' ) )
+			self.SetBackgroundColour( wx.GetApp().GetColor( '#F1EEDD' ) )
+			self.scoreTxt.SetForegroundColour( wx.GetApp().GetColor( '#202120' ) )
+			self.recordTxt.SetForegroundColour( wx.GetApp().GetColor( '#202120' ) )
+		self.Refresh()
 
 	def OnKeyDown( self, evt: wx.KeyEvent ):
-		if evt.GetUnicodeKey() == 'd':
+		if evt.GetUnicodeKey() == 68:
 			self.darkmode = not self.darkmode
-			self.UpdateColor()
+		elif evt.GetUnicodeKey() == 76:
+			self.limit = not self.limit
+		elif evt.GetUnicodeKey() == 75:
+			wx.GetApp().Close()
 
 	def OnMouseClick( self, evt: wx.MouseEvent ):
 		if evt.LeftIsDown():
@@ -99,8 +110,11 @@ class LoadingBar(wx.Frame):
 
 	def OnMouseMove( self, evt: wx.MouseEvent ):
 		if evt.Dragging() and ( self.initDrag is not None ):
-			if self.GetPosition().Get()[ 1 ] + ( evt.GetY() - self.initDrag[ 1 ] ) < 200:
+			if ( self.GetPosition().Get()[ 1 ] + ( evt.GetY() - self.initDrag[ 1 ] ) < 200 ) and self.limit:
 				return
+			for window in wx.GetApp().windows:
+				if self.IsTouching( window.GetRect() ):
+					return
 			self.Move(
 				wx.Point(
 					self.GetPosition().Get()[ 0 ] + ( evt.GetX() - self.initDrag[ 0 ] ),

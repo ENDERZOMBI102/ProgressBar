@@ -9,11 +9,12 @@ class MalusUnit( UnitBase ):
 		super(MalusUnit, self).__init__(
 			pos=pos,
 			speed=speed,
-			color=wx.Colour('#D531E0')
+			color=wx.GetApp().GetColor('#D531E0')
 		)
 
 	def OnBarTouch( self ):
-		if self.bar.IsScore( self ):
-			self.bar.score -= 5
-			self.bar.UpdateScore()
-		self.Destroy()
+		if self.loadBar.IsScore( self.bbox ):
+			self.loadBar.score -= 5
+			self.loadBar.UpdateScore()
+		else:
+			self.Kill()

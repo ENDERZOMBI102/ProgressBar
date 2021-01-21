@@ -9,8 +9,11 @@ class NullUnit( UnitBase ):
 		super(NullUnit, self).__init__(
 			pos=pos,
 			speed=speed,
-			color=wx.Colour('#969696')
+			color=wx.GetApp().GetColor('#969696')
 		)
 
 	def OnBarTouch( self ):
-		self.Destroy()
+		if self.loadBar.IsScore( self.bbox ):
+			self.Remove()
+		else:
+			self.Kill()
