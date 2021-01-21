@@ -23,7 +23,8 @@ class GameStage(wx.Frame):
 		self.Bind(wx.EVT_SET_FOCUS, lambda evt: wx.GetApp().loadBar.Raise() if wx.GetApp().playing else print(end='') )
 
 	def initScreen( self ):
-		img = ImageGrab.grab()
+		disp: wx.Rect = wx.Display( wx.Display.GetFromWindow(self) ).GetGeometry()
+		img = ImageGrab.grab( bbox=(disp.x, disp.y, disp.width, disp.height) )
 		wx_img = wx.Image( img.width, img.height, img.convert( 'RGB' ).tobytes() )
 		if img.mode[ -1 ] == 'A':
 			alpha = img.getchannel( "A" ).tobytes()
