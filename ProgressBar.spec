@@ -20,7 +20,7 @@ a = Analysis(
 pyz = PYZ(
     a.pure,
     a.zipped_data,
-    cipher=block_cipher
+    cipher=None
 )
 exe = EXE(
     pyz,
