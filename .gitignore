@@ -1,3 +1,7 @@
 src/ProgressBar.cfg
+build/**
+build/*.*
+build/*
 build
 dist
+/profiling/latest.json
