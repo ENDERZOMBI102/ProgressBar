@@ -48,9 +48,10 @@ class LoadingBar(wx.Frame):
 		return True
 
 	def EndGame( self ):
-		self.SetPosition( wx.Point(0, wx.GetDisplaySize().Get()[1] + 200) )
+		self.Show(False)
 		wx.GetApp().playing = False
 		wx.GetApp().units.clear()
+		wx.GetApp().gameStage.ClearWindows()
 		newRecord = self.score > self.record
 		msg = f'Final Score: {self.score}\nRecord: {self.record}'
 		if newRecord:
@@ -69,6 +70,7 @@ class LoadingBar(wx.Frame):
 			self.UpdateScore()
 			self.recordTxt.SetLabel(f'record: {self.record}')
 			self.CenterOnScreen()
+			self.Show()
 			wx.GetApp().playing = True
 		else:
 			wx.GetApp().Close()
@@ -97,6 +99,7 @@ class LoadingBar(wx.Frame):
 	def OnKeyDown( self, evt: wx.KeyEvent ):
 		if evt.GetUnicodeKey() == 68:
 			self.darkmode = not self.darkmode
+			self.UpdateColor()
 		elif evt.GetUnicodeKey() == 76:
 			self.limit = not self.limit
 		elif evt.GetUnicodeKey() == 75:
@@ -110,17 +113,15 @@ class LoadingBar(wx.Frame):
 
 	def OnMouseMove( self, evt: wx.MouseEvent ):
 		if evt.Dragging() and ( self.initDrag is not None ):
-			if ( self.GetPosition().Get()[ 1 ] + ( evt.GetY() - self.initDrag[ 1 ] ) < 200 ) and self.limit:
+			nextX = self.GetPosition().Get()[ 0 ] + ( evt.GetX() - self.initDrag[ 0 ] )
+			nextY = self.GetPosition().Get()[ 1 ] + ( evt.GetY() - self.initDrag[ 1 ] )
+			if ( nextY < 200 ) and self.limit:
 				return
+			nextRect = wx.Rect( nextX, nextY, 400, 60 )
 			for window in wx.GetApp().windows:
-				if self.IsTouching( window.GetRect() ):
+				if window.GetRect().Intersects( nextRect ):
 					return
-			self.Move(
-				wx.Point(
-					self.GetPosition().Get()[ 0 ] + ( evt.GetX() - self.initDrag[ 0 ] ),
-					self.GetPosition().Get()[ 1 ] + ( evt.GetY() - self.initDrag[ 1 ] )
-				)
-			)
+			self.Move( wx.Point(nextX, nextY) )
 
 
 
