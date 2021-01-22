@@ -4,4 +4,4 @@ build/*.*
 build/*
 build
 dist
-/profiling/latest.json
+profiling
