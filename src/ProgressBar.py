@@ -1,6 +1,4 @@
-import random
 from pathlib import Path
-from time import time
 from typing import List
 
 import wx
@@ -10,15 +8,8 @@ from LoadingBar import LoadingBar
 from Particle import Particle
 from Profiler import profiler
 
-from units.ErrorUnit import ErrorUnit
-from units.FillUnit import FillUnit
-from units.JollyUnit import JollyUnit
-from units.MalusUnit import MalusUnit
-from units.MultiUnit import MultiUnit
 from units.NormalUnit import NormalUnit
-from units.NullUnit import NullUnit
 from units.UnitBase import UnitBase
-from units.WrongUnit import WrongUnit
 
 from windows.WindowBase import WindowBase
 
@@ -32,9 +23,7 @@ class App(wx.App):
 	loadBar: LoadingBar
 	gameStage: GameStage
 	runner: wx.Timer
-	spawnTimer = time()
 	colordb: wx.ColourDatabase
-	diffMultiplier: float = 1.0
 
 	def OnInit(self):
 		self.colordb = wx.ColourDatabase()
@@ -47,7 +36,9 @@ class App(wx.App):
 		return True
 
 	def OnExit(self):
-		profiler.save( Path('./../profiling/latest.json') )
+		import sys
+		if not getattr(sys, 'FROZEN', False):
+			profiler.save( Path('./../profiling/latest.json') )
 		return True
 
 	def Tick( self, evt: wx.TimerEvent ):
@@ -76,13 +67,13 @@ class App(wx.App):
 			for particle in self.particles:
 				particle.OnDraw(self.gameStage)
 			profiler.stopState( 'particles' )
-			profiler.startState( 'spawning' )
-			if time() - self.spawnTimer > ( random.randrange(1, 3) * random.randrange(1, 3) ) * self.diffMultiplier:
-				self.spawnTimer = time()
-				self.Spawn()
-				if self.diffMultiplier > 0.1:
-					self.diffMultiplier -= 0.01
-			profiler.stopState( 'spawning' )
+			profiler.startState( 'tick_stage' )
+			self.gameStage.Tick()
+			profiler.stopState( 'tick_stage' )
+			profiler.startState( 'tick_windows' )
+			for window in self.windows:
+				window.OnTick()
+			profiler.stopState( 'tick_windows' )
 			profiler.stopState( 'tick' )
 
 	def Close( self ):
@@ -98,86 +89,6 @@ class App(wx.App):
 			self.colordb.AddColour(color, wx.Colour(color) )
 			clr = self.colordb.Find( color )
 		return clr
-
-	def Spawn( self ):
-		if len( self.units ) < 30:
-			n = random.randrange(100)
-			if n > 90:
-				self.units.append(
-					ErrorUnit(
-						pos=randUnitPos(),
-						speed=random.randrange( 2, 10 )
-					)
-				)
-			elif n > 70:
-				self.units.append(
-					WrongUnit(
-						pos=randUnitPos(),
-						speed=random.randrange( 2, 10 )
-					)
-				)
-			elif n > 40:
-				self.units.append(
-					NormalUnit(
-						pos=randUnitPos(),
-						speed=random.randrange( 2, 10 )
-					)
-				)
-			elif n > 33:
-				self.units.append(
-					MalusUnit(
-						pos=randUnitPos(),
-						speed=random.randrange( 2, 10 )
-					)
-				)
-			elif n > 26:
-				self.units.append(
-					NullUnit(
-						pos=randUnitPos(),
-						speed=random.randrange( 2, 10 )
-					)
-				)
-			elif n > 20:
-				self.units.append(
-					MultiUnit(
-						pos=randUnitPos(),
-						speed=random.randrange( 2, 10 ),
-						scoreMultiplier=random.randrange( 1, 3 )
-					)
-				)
-			elif n > 13:
-				self.units.append(
-					JollyUnit(
-						pos=randUnitPos(),
-						speed=random.randrange( 2, 10 ),
-						initialState=random.randrange( 0, 5 )
-					)
-				)
-			elif n > 9:
-				self.units.append(
-					FillUnit(
-						pos=randUnitPos(),
-						speed=random.randrange( 2, 10 )
-					)
-				)
-		if len( self.windows ) < 10:
-			n = random.randrange( 100 )
-			if n < 10:
-				self.windows.append(
-					WindowBase(
-						pos=randWindowPos()
-					)
-				)
-
-
-def randUnitPos() -> wx.Point:
-	size = wx.GetDisplaySize().Get()
-	return wx.Point( random.randrange( 0, size[0] ), -40 )
-
-
-def randWindowPos() -> wx.Point:
-	size = wx.GetDisplaySize().Get()
-	return wx.Point( random.randrange( 0, size[0] ), random.randrange( 0, size[1] ) )
 
 
 if __name__ == '__main__':
