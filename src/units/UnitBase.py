@@ -2,7 +2,6 @@ from time import time
 
 import wx
 
-from GameStage import GameStage
 from LoadingBar import LoadingBar
 from BaseClasses import Tickable, Drawable
 
@@ -35,7 +34,7 @@ class UnitBase(Tickable, Drawable):
 			if self.bbox.y >= wx.GetApp().gameStage.GetSize().GetHeight():
 				self.Remove()
 
-	def OnDraw( self, gameStage: GameStage ):
+	def OnDraw( self, gameStage: 'GameStage' ):
 		gameStage.dc.SetBrush( wx.Brush( self.color ) )
 		gameStage.dc.SetPen( wx.Pen( self.color ) )
 		gameStage.dc.DrawRectangle( self.bbox )
