@@ -1,7 +1,5 @@
 import wx
 
-from BaseClasses import Tickable
-
 
 class WindowBase(wx.Frame):
 
@@ -22,8 +20,6 @@ class WindowBase(wx.Frame):
 		self.dc.SetPen( wx.Pen( wx.GetApp().GetColor('WHITE') ) )
 		self.dc.SetBrush( wx.Brush( wx.GetApp().GetColor('WHITE') ) )
 		self.dc.DrawRectangle(0, 0, 100, 100)
-
-
 
 		self.Show()
 		self.Bind(wx.EVT_CLOSE, self.OnDestroy, self)
