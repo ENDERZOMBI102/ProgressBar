@@ -1,7 +1,5 @@
 from abc import ABCMeta, abstractmethod
 
-from GameStage import GameStage
-
 
 class Tickable(metaclass=ABCMeta):
 
@@ -13,5 +11,5 @@ class Tickable(metaclass=ABCMeta):
 class Drawable(metaclass=ABCMeta):
 
 	@abstractmethod
-	def OnDraw( self, stage: GameStage ):
+	def OnDraw( self, stage: 'GameStage' ):
 		pass
