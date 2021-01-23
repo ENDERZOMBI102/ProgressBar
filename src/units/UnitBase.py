@@ -3,10 +3,10 @@ from time import time
 import wx
 
 from LoadingBar import LoadingBar
-from BaseClasses import Tickable, Drawable
+from BaseClasses import Tickable, Drawable, Interactable
 
 
-class UnitBase(Tickable, Drawable):
+class UnitBase(Tickable, Drawable, Interactable):
 
 	color: wx.Colour
 	bbox: wx.Rect
@@ -30,17 +30,14 @@ class UnitBase(Tickable, Drawable):
 				self.bbox.Offset( 0, 10 )
 				self.moveTimer = time()
 			if self.loadBar.IsTouching(self.bbox):
-				self.OnBarTouch()
+				self.OnBarTouch( self.loadBar.GetRect() )
 			if self.bbox.y >= wx.GetApp().gameStage.GetSize().GetHeight():
 				self.Remove()
 
-	def OnDraw( self, gameStage: 'GameStage' ):
-		gameStage.dc.SetBrush( wx.Brush( self.color ) )
-		gameStage.dc.SetPen( wx.Pen( self.color ) )
-		gameStage.dc.DrawRectangle( self.bbox )
-
-	def OnBarTouch( self ):
-		pass
+	def OnDraw( self, canvas: wx.WindowDC ):
+		canvas.SetBrush( wx.Brush( self.color ) )
+		canvas.SetPen( wx.Pen( self.color ) )
+		canvas.DrawRectangle( self.bbox )
 
 	def Kill( self ):
 		self.Remove()
