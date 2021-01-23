@@ -31,7 +31,7 @@ class UnitBase(Tickable, Drawable, Interactable):
 				self.moveTimer = time()
 			if self.loadBar.IsTouching(self.bbox):
 				self.OnBarTouch( self.loadBar.GetRect() )
-			if self.bbox.y >= wx.GetApp().gameStage.GetSize().GetHeight():
+			if self.bbox.GetY() >= wx.GetApp().gameStage.GetSize().GetHeight():
 				self.Remove()
 
 	def OnDraw( self, canvas: wx.WindowDC ):
