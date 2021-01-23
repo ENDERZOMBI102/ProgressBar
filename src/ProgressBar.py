@@ -45,7 +45,7 @@ class App(wx.App):
 		if self.playing:
 			profiler.startState( 'tick' )
 			profiler.startState( 'clear_window' )
-			self.gameStage.clear()
+			self.gameStage.Clear()
 			profiler.stopState( 'clear_window' )
 			profiler.startState( 'remove_units' )
 			for unit in self.units[::-1]:
@@ -54,7 +54,7 @@ class App(wx.App):
 			profiler.stopState( 'remove_units' )
 			profiler.startState( 'draw_units' )
 			for unit in self.units:
-				unit.OnDraw(self.gameStage)
+				unit.OnDraw(self.gameStage.dc)
 			profiler.stopState( 'draw_units' )
 			profiler.startState( 'tick_units' )
 			for unit in self.units:
