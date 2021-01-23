@@ -2,8 +2,10 @@ from typing import Tuple, Union
 
 import wx
 
+from BaseClasses import Tickable
 
-class LoadingBar(wx.Frame):
+
+class LoadingBar(wx.Frame, Tickable):
 
 	initDrag: Union[ Tuple[ int, int ], None ] = None
 	record: int = 0
@@ -120,9 +122,6 @@ class LoadingBar(wx.Frame):
 			nextRect = wx.Rect( nextX, nextY, 400, 60 )
 			for window in wx.GetApp().windows:
 				if window.GetRect().Intersects( nextRect ):
+					window.OnCollide( self.GetRect() )
 					return
 			self.Move( wx.Point(nextX, nextY) )
-
-
-
-
