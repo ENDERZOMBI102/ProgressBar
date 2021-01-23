@@ -1,15 +1,25 @@
-from abc import ABCMeta, abstractmethod
+import wx
 
 
-class Tickable(metaclass=ABCMeta):
+class Tickable:
 
-	@abstractmethod
-	def OnTick( self ):
+	def OnTick( self ) -> None:
 		pass
 
 
-class Drawable(metaclass=ABCMeta):
+class Drawable:
 
-	@abstractmethod
-	def OnDraw( self, stage: 'GameStage' ):
+	def OnDraw( self, canvas: wx.WindowDC ) -> None:
+		pass
+
+
+class Interactable:
+
+	def OnBarTouch( self, bbox: wx.Rect ) -> None:
+		pass
+
+
+class Collidable:
+
+	def OnCollide( self, bbox: wx.Rect ) -> None:
 		pass
