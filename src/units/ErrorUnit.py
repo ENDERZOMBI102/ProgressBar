@@ -12,5 +12,5 @@ class ErrorUnit( UnitBase ):
 			color=wx.GetApp().GetColor('RED')
 		)
 
-	def OnBarTouch( self ):
+	def OnBarTouch( self, bbox: wx.Rect ) -> None:
 		self.loadBar.EndGame()

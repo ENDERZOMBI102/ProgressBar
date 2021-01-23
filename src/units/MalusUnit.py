@@ -12,7 +12,7 @@ class MalusUnit( UnitBase ):
 			color=wx.GetApp().GetColor('#D531E0')
 		)
 
-	def OnBarTouch( self ):
+	def OnBarTouch( self, bbox: wx.Rect ) -> None:
 		if self.loadBar.IsScore( self.bbox ):
 			self.loadBar.score -= 5
 			self.loadBar.UpdateScore()

@@ -12,7 +12,7 @@ class NullUnit( UnitBase ):
 			color=wx.GetApp().GetColor('#969696')
 		)
 
-	def OnBarTouch( self ):
+	def OnBarTouch( self, bbox: wx.Rect ) -> None:
 		if self.loadBar.IsScore( self.bbox ):
 			self.Remove()
 		else:

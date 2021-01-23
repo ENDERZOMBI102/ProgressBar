@@ -39,7 +39,7 @@ class JollyUnit(UnitBase):
 			self.changeActionTime = time()
 		super(JollyUnit, self).OnTick()
 
-	def OnBarTouch( self ):
+	def OnBarTouch( self, bbox: wx.Rect ) -> None:
 		if self.loadBar.IsScore(self.bbox):
 			if self.action == 0:
 				self.loadBar.score += 5
