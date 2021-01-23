@@ -58,7 +58,7 @@ class GameStage(wx.Frame):
 	def ClearWindows( self ):
 		for window in self.app.windows:
 			window.Destroy()
-		self.app.windows.Clear()
+		self.app.windows.clear()
 
 	def Tick( self ):
 		# spawn units
