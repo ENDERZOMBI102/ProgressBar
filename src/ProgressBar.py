@@ -8,10 +8,11 @@ from LoadingBar import LoadingBar
 from Particle import Particle
 from Profiler import profiler
 
-from units.NormalUnit import NormalUnit
-from units.UnitBase import UnitBase
+from unit.NormalUnit import NormalUnit
+from unit.UnitBase import UnitBase
 
-from windows.WindowBase import WindowBase
+from distraction.DistractionBase import DistractionBase
+from unit.behavior.BasicBehavior import BasicBehavior
 
 
 class App(wx.App):
@@ -19,7 +20,7 @@ class App(wx.App):
 	playing: bool = True
 	units: List[UnitBase] = []
 	particles: List[Particle] = []
-	windows: List[WindowBase] = []
+	windows: List[DistractionBase] = []
 	loadBar: LoadingBar
 	gameStage: GameStage
 	runner: wx.Timer
@@ -29,7 +30,7 @@ class App(wx.App):
 		self.colordb = wx.ColourDatabase()
 		self.gameStage = GameStage()
 		self.loadBar = LoadingBar()
-		self.units = [ NormalUnit( wx.Point(10, 10), 50 ) ]
+		self.units = [ NormalUnit( wx.Point(10, 10), 50, BasicBehavior ) ]
 		self.runner = wx.Timer(self)
 		self.Bind(wx.EVT_TIMER, self.Tick)
 		wx.CallLater(90, self.runner.Start, 10)

@@ -3,13 +3,13 @@ import wx
 from BaseClasses import Collidable, Tickable
 
 
-class WindowBase(wx.Frame, Tickable, Collidable):
+class DistractionBase( wx.Frame, Tickable, Collidable ):
 
 	size: wx.Size = wx.Size(100, 200)
 	dc: wx.WindowDC
 
 	def __init__(self, pos: wx.Point):
-		super(WindowBase, self).__init__(
+		super( DistractionBase, self ).__init__(
 			parent=wx.GetApp().gameStage,
 			pos=pos,
 			size=self.size,
@@ -28,7 +28,10 @@ class WindowBase(wx.Frame, Tickable, Collidable):
 		self.Destroy()
 
 	def OnTick( self ) -> None:
-		pass
+		state: wx.MouseState = wx.GetMouseState()
+		if state.GetPosition().Get() == self.GetPosition().Get():
+			if state.LeftIsDown():
+				self.OnDestroy(None)
 
 	def OnCollide( self, bbox: wx.Rect ) -> None:
 		pass
