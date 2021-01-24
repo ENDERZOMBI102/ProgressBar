@@ -5,15 +5,17 @@ import wx
 from PIL import ImageGrab
 
 from Score import ScoreData
-from units.ErrorUnit import ErrorUnit
-from units.FillUnit import FillUnit
-from units.JollyUnit import JollyUnit
-from units.MalusUnit import MalusUnit
-from units.MultiUnit import MultiUnit
-from units.NormalUnit import NormalUnit
-from units.NullUnit import NullUnit
-from units.WrongUnit import WrongUnit
-from windows.WindowBase import WindowBase
+from unit.ErrorUnit import ErrorUnit
+from unit.FillUnit import FillUnit
+from unit.JollyUnit import JollyUnit
+from unit.MalusUnit import MalusUnit
+from unit.MultiUnit import MultiUnit
+from unit.NormalUnit import NormalUnit
+from unit.NullUnit import NullUnit
+from unit.WrongUnit import WrongUnit
+from distraction.DistractionBase import DistractionBase
+from unit.behavior.BasicBehavior import BasicBehavior
+from unit.behavior.BehaviorBase import BehaviorBase
 
 
 class GameStage(wx.Frame):
@@ -42,7 +44,7 @@ class GameStage(wx.Frame):
 
 	def InitScreen( self ):
 		disp: wx.Rect = wx.Display( wx.Display.GetFromWindow(self) ).GetGeometry()
-		img = ImageGrab.grab( bbox=(disp.x, disp.y, disp.width, disp.height) )
+		img = ImageGrab.grab( bbox=( disp.GetX(), disp.GetY(), disp.GetWidth(), disp.GetHeight() ) )
 		wx_img = wx.Image( img.width, img.height, img.convert( 'RGB' ).tobytes() )
 		if img.mode[ -1 ] == 'A':
 			alpha = img.getchannel( "A" ).tobytes()
@@ -76,7 +78,7 @@ class GameStage(wx.Frame):
 		n = random.randrange( 100 )
 		if n < 10:
 			self.app.windows.append(
-				WindowBase(
+				DistractionBase(
 					pos=randWindowPos()
 				)
 			)
@@ -87,35 +89,40 @@ class GameStage(wx.Frame):
 			self.app.units.append(
 				ErrorUnit(
 					pos=randUnitPos(),
-					speed=random.randrange( 2, 10 )
+					speed=random.randrange( 2, 10 ),
+					behavior=randUnitBehavior()
 				)
 			)
 		elif n > 70:
 			self.app.units.append(
 				WrongUnit(
 					pos=randUnitPos(),
-					speed=random.randrange( 2, 10 )
+					speed=random.randrange( 2, 10 ),
+					behavior=randUnitBehavior()
 				)
 			)
 		elif n > 40:
 			self.app.units.append(
 				NormalUnit(
 					pos=randUnitPos(),
-					speed=random.randrange( 2, 10 )
+					speed=random.randrange( 2, 10 ),
+					behavior=randUnitBehavior()
 				)
 			)
 		elif n > 33:
 			self.app.units.append(
 				MalusUnit(
 					pos=randUnitPos(),
-					speed=random.randrange( 2, 10 )
+					speed=random.randrange( 2, 10 ),
+					behavior=randUnitBehavior()
 				)
 			)
 		elif n > 26:
 			self.app.units.append(
 				NullUnit(
 					pos=randUnitPos(),
-					speed=random.randrange( 2, 10 )
+					speed=random.randrange( 2, 10 ),
+					behavior=randUnitBehavior()
 				)
 			)
 		elif n > 20:
@@ -123,6 +130,7 @@ class GameStage(wx.Frame):
 				MultiUnit(
 					pos=randUnitPos(),
 					speed=random.randrange( 2, 10 ),
+					behavior=randUnitBehavior(),
 					scoreMultiplier=random.randrange( 1, 3 )
 				)
 			)
@@ -131,6 +139,7 @@ class GameStage(wx.Frame):
 				JollyUnit(
 					pos=randUnitPos(),
 					speed=random.randrange( 2, 10 ),
+					behavior=randUnitBehavior(),
 					initialState=random.randrange( 0, 5 )
 				)
 			)
@@ -138,7 +147,8 @@ class GameStage(wx.Frame):
 			self.app.units.append(
 				FillUnit(
 					pos=randUnitPos(),
-					speed=random.randrange( 2, 10 )
+					speed=random.randrange( 2, 10 ),
+					behavior=randUnitBehavior()
 				)
 			)
 
@@ -151,6 +161,15 @@ def randUnitPos() -> wx.Point:
 def randWindowPos() -> wx.Point:
 	size = wx.GetDisplaySize().Get()
 	return wx.Point( random.randrange( 0, size[ 0 ] ), random.randrange( 0, size[ 1 ] ) )
+
+
+def randUnitBehavior() -> BehaviorBase.__class__:
+	return random.choice(
+		(
+			BasicBehavior,
+
+		)
+	)
 
 
 
