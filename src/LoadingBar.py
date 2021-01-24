@@ -77,6 +77,9 @@ class LoadingBar(wx.Frame, Tickable):
 		else:
 			wx.GetApp().Close()
 
+	def AddScore( self, score: int ):
+		self.score += score
+
 	def OnTick( self ):
 		self.UpdateScore()
 		self.UpdateRecord()
