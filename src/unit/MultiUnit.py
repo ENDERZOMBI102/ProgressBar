@@ -17,7 +17,7 @@ class MultiUnit(UnitBase):
 
 	def OnBarTouch( self, bbox: wx.Rect ) -> None:
 		if self.loadBar.IsScore(self.bbox):
-			self.loadBar.score += self.score
+			self.loadBar.AddScore( self.score )
 			self.Remove()
 		else:
 			self.Kill()

@@ -44,18 +44,17 @@ class JollyUnit(UnitBase):
 	def OnBarTouch( self, bbox: wx.Rect ) -> None:
 		if self.loadBar.IsScore(self.bbox):
 			if self.action == 0:
-				self.loadBar.score += 5
+				self.loadBar.AddScore( 5 )
 			elif self.action == 1:
-				self.loadBar.score -= 5
+				self.loadBar.AddScore( -5 )
 			elif self.action == 2:
 				self.loadBar.EndGame()
-				return
 			elif self.action == 3:
-				self.loadBar.score += 100
+				self.loadBar.AddScore( 100 )
 			elif self.action == 4:
-				self.loadBar.score += 20
+				self.loadBar.AddScore( 20 )
 			else:
-				self.loadBar.score -= 5
+				self.loadBar.AddScore( 5 )
 			self.Remove()
 		else:
 			self.Kill()

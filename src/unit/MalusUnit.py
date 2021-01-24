@@ -16,7 +16,7 @@ class MalusUnit( UnitBase ):
 
 	def OnBarTouch( self, bbox: wx.Rect ) -> None:
 		if self.loadBar.IsScore( self.bbox ):
-			self.loadBar.score -= 5
-			self.loadBar.UpdateScore()
+			self.loadBar.AddScore( -5 )
+			self.Remove()
 		else:
 			self.Kill()

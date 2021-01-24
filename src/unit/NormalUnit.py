@@ -1,7 +1,6 @@
 import wx
 
 from .UnitBase import UnitBase
-from .behavior.BasicBehavior import BasicBehavior
 from .behavior.BehaviorBase import BehaviorBase
 
 
@@ -17,7 +16,7 @@ class NormalUnit( UnitBase ):
 
 	def OnBarTouch( self, bbox: wx.Rect ) -> None:
 		if self.loadBar.IsScore(self.bbox):
-			self.loadBar.score += 5
+			self.loadBar.AddScore( 5 )
 			self.Remove()
 		else:
 			self.Kill()
