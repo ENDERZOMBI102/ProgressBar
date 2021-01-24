@@ -1,5 +1,3 @@
-from time import time
-
 import wx
 
 from LoadingBar import LoadingBar
@@ -11,14 +9,14 @@ class UnitBase(Tickable, Drawable, Interactable):
 	color: wx.Colour
 	bbox: wx.Rect
 	removed: bool = False
-	moveTimer: float = 0
+	behavior: 'BehaviorBase'
 	loadBar: LoadingBar
 
-	def __init__(self, pos: wx.Point, speed: int, color: wx.Colour):
+	def __init__(self, pos: wx.Point, speed: int, color: wx.Colour, behavior):
 		self.color = color
 		self.speed = speed
+		self.behavior = behavior
 		self.bbox = wx.Rect( pos, wx.Size(20, 40) )
-		self.moveTimer = time()
 		self.loadBar = wx.GetApp().loadBar
 
 	def SetColor( self, color: str ):
@@ -26,9 +24,7 @@ class UnitBase(Tickable, Drawable, Interactable):
 
 	def OnTick( self ):
 		if not self.removed:
-			if time() - self.moveTimer > self.speed * 0.0020:
-				self.bbox.Offset( 0, 10 )
-				self.moveTimer = time()
+			self.behavior.Think( self.loadBar, wx.GetApp().gameStage )
 			if self.loadBar.IsTouching(self.bbox):
 				self.OnBarTouch( self.loadBar.GetRect() )
 			if self.bbox.GetY() >= wx.GetApp().gameStage.GetSize().GetHeight():

@@ -3,6 +3,7 @@ from time import time
 import wx
 
 from .UnitBase import UnitBase
+from .behavior.BehaviorBase import BehaviorBase
 
 
 class JollyUnit(UnitBase):
@@ -10,11 +11,12 @@ class JollyUnit(UnitBase):
 	action: int = 0  # 0 = normal, 1 = wrong, 2 = error, 3 = fill, 4 = multi, 5 = malus
 	changeActionTime: float = None
 
-	def __init__(self, pos: wx.Point, speed: int, initialState=0):
+	def __init__(self, pos: wx.Point, speed: int, behavior: BehaviorBase.__class__, initialState=0):
 		super( JollyUnit, self ).__init__(
 			pos=pos,
 			speed=speed,
-			color=wx.GetApp().GetColor('#0390FC')
+			color=wx.GetApp().GetColor('#0390FC'),
+			behavior=behavior(self)
 		)
 		self.action = initialState
 

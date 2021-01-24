@@ -1,15 +1,17 @@
 import wx
 
 from .UnitBase import UnitBase
+from .behavior.BehaviorBase import BehaviorBase
 
 
 class MultiUnit(UnitBase):
 
-	def __init__(self, pos: wx.Point, speed: int, scoreMultiplier: int = 1):
+	def __init__(self, pos: wx.Point, speed: int, behavior: BehaviorBase.__class__, scoreMultiplier: int = 1):
 		super( MultiUnit, self ).__init__(
 			pos=pos,
 			speed=speed,
-			color=wx.GetApp().GetColor('#9DEFF2')
+			color=wx.GetApp().GetColor('#9DEFF2'),
+			behavior=behavior(self)
 		)
 		self.score = 5 * scoreMultiplier
 
