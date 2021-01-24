@@ -16,6 +16,7 @@ from unit.WrongUnit import WrongUnit
 from distraction.DistractionBase import DistractionBase
 from unit.behavior.BasicBehavior import BasicBehavior
 from unit.behavior.BehaviorBase import BehaviorBase
+from unit.behavior.FollowBehavior import FollowBehavior
 
 
 class GameStage(wx.Frame):
@@ -167,7 +168,7 @@ def randUnitBehavior() -> BehaviorBase.__class__:
 	return random.choice(
 		(
 			BasicBehavior,
-
+			FollowBehavior
 		)
 	)
 
