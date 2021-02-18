@@ -13,6 +13,7 @@ class LoadingBar(wx.Frame, Tickable):
 	scoreTxt: wx.StaticText
 	recordTxt: wx.StaticText
 	limit: bool = True
+	godLike: bool = False
 
 	def __init__(self):
 		super(LoadingBar, self).__init__(
@@ -50,6 +51,8 @@ class LoadingBar(wx.Frame, Tickable):
 		return True
 
 	def EndGame( self ):
+		if self.godLike:
+			return
 		self.Show(False)
 		wx.GetApp().playing = False
 		wx.GetApp().units.clear()
@@ -111,10 +114,13 @@ class LoadingBar(wx.Frame, Tickable):
 		if evt.GetUnicodeKey() == 68:
 			self.darkmode = not self.darkmode
 			self.UpdateColor()
-		elif evt.GetUnicodeKey() == 76:
-			self.limit = not self.limit
+		elif evt.GetUnicodeKey() == 71:
+			self.godLike = not self.godLike
+			wx.GetApp().spawnParticle(  )
 		elif evt.GetUnicodeKey() == 75:
 			wx.GetApp().Close()
+		elif evt.GetUnicodeKey() == 76:
+			self.limit = not self.limit
 
 	def OnMouseClick( self, evt: wx.MouseEvent ):
 		if evt.LeftIsDown():

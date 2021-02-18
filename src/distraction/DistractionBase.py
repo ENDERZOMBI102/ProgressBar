@@ -16,22 +16,16 @@ class DistractionBase( wx.Frame, Tickable, Collidable ):
 			style=wx.BORDER_NONE | wx.FRAME_NO_TASKBAR
 		)
 		self.dc = wx.WindowDC(self)
-		self.dc.SetPen( wx.Pen( wx.GetApp().GetColor('GREEN') ) )
-		self.dc.SetBrush( wx.Brush( wx.GetApp().GetColor('GREEN') ) )
-		self.dc.DrawRectangle(0, 0, 100, 100)
-
-		self.Show()
-		self.Bind(wx.EVT_CLOSE, self.OnDestroy, self)
+		self.Raise()
+		wx.GetApp().loadBar.Raise()
+		print('distraction')
 
 	def OnDestroy( self, evt: wx.CloseEvent ):
 		wx.GetApp().windows.remove(self)
 		self.Destroy()
 
 	def OnTick( self ) -> None:
-		state: wx.MouseState = wx.GetMouseState()
-		if state.GetPosition().Get() == self.GetPosition().Get():
-			if state.LeftIsDown():
-				self.OnDestroy(None)
+		pass
 
 	def OnCollide( self, bbox: wx.Rect ) -> None:
 		pass

@@ -5,6 +5,7 @@ import wx
 from PIL import ImageGrab
 
 from Score import ScoreData
+from distraction.KillerDistraction import KillerDistraction
 from unit.ErrorUnit import ErrorUnit
 from unit.FillUnit import FillUnit
 from unit.JollyUnit import JollyUnit
@@ -13,7 +14,6 @@ from unit.MultiUnit import MultiUnit
 from unit.NormalUnit import NormalUnit
 from unit.NullUnit import NullUnit
 from unit.WrongUnit import WrongUnit
-from distraction.DistractionBase import DistractionBase
 from unit.behavior.BasicBehavior import BasicBehavior
 from unit.behavior.BehaviorBase import BehaviorBase
 from unit.behavior.FollowBehavior import FollowBehavior
@@ -79,7 +79,7 @@ class GameStage(wx.Frame):
 		n = random.randrange( 100 )
 		if n < 10:
 			self.app.windows.append(
-				DistractionBase(
+				KillerDistraction(
 					pos=randWindowPos()
 				)
 			)
