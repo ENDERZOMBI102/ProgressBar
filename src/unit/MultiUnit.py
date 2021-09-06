@@ -15,7 +15,7 @@ class MultiUnit(UnitBase):
 		)
 		self.score = 5 * scoreMultiplier
 
-	def OnBarTouch( self, bbox: wx.Rect ) -> None:
+	def OnCollide( self, bbox: wx.Rect ) -> None:
 		if self.loadBar.IsScore(self.bbox):
 			self.loadBar.AddScore( self.score )
 			self.Remove()

@@ -14,7 +14,7 @@ class NullUnit( UnitBase ):
 			behavior=behavior(self)
 		)
 
-	def OnBarTouch( self, bbox: wx.Rect ) -> None:
+	def OnCollide( self, bbox: wx.Rect ) -> None:
 		if self.loadBar.IsScore( self.bbox ):
 			self.Remove()
 		else:

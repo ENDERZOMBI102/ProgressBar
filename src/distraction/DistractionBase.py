@@ -1,31 +1,27 @@
 import wx
 
-from BaseClasses import Collidable, Tickable
+from BaseClasses import Interactable, Drawable, Collidable, Entity
+from Util import MouseButton
 
 
-class DistractionBase( wx.Frame, Tickable, Collidable ):
+class DistractionBase( Entity, Interactable, Collidable, Drawable ):
 
-	size: wx.Size = wx.Size(100, 200)
+	bbox: wx.Rect
 	dc: wx.WindowDC
+	removed = False
 
 	def __init__(self, pos: wx.Point):
-		super( DistractionBase, self ).__init__(
-			parent=wx.GetApp().gameStage,
-			pos=pos,
-			size=self.size,
-			style=wx.BORDER_NONE | wx.FRAME_NO_TASKBAR
-		)
 		self.dc = wx.WindowDC(self)
-		self.Raise()
-		wx.GetApp().loadBar.Raise()
-		print('distraction')
+		self.bbox = wx.Rect( pos, wx.Size(100, 200) )
 
-	def OnDestroy( self, evt: wx.CloseEvent ):
-		wx.GetApp().windows.remove(self)
-		self.Destroy()
+	def GetBBox( self ) -> wx.Rect:
+		return self.bbox
 
-	def OnTick( self ) -> None:
+	def OnTouch( self, bbox: wx.Rect ) -> None:
 		pass
 
-	def OnCollide( self, bbox: wx.Rect ) -> None:
-		pass
+	def OnClick( self, pos: wx.Point, btn: MouseButton ) -> None:
+		self.removed = True
+
+	def OnDraw( self, canvas: wx.WindowDC ) -> None:
+		canvas.DrawRectangle( self.bbox )

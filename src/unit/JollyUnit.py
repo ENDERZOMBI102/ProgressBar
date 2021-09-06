@@ -20,7 +20,7 @@ class JollyUnit(UnitBase):
 		)
 		self.action = initialState
 
-	def OnTick( self ):
+	def OnTick( self, tickDelta: float ):
 		if ( self.changeActionTime is None ) or ( time() - self.changeActionTime > 3 ):
 			if self.action == 5:
 				self.action = 0
@@ -39,9 +39,9 @@ class JollyUnit(UnitBase):
 			else:  # malus
 				self.SetColor( '#D531E0' )
 			self.changeActionTime = time()
-		super(JollyUnit, self).OnTick()
+		super(JollyUnit, self).OnTick(tickDelta)
 
-	def OnBarTouch( self, bbox: wx.Rect ) -> None:
+	def OnCollide( self, bbox: wx.Rect ) -> None:
 		if self.loadBar.IsScore(self.bbox):
 			if self.action == 0:
 				self.loadBar.AddScore( 5 )

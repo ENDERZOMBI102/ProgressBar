@@ -2,10 +2,11 @@ from typing import Tuple, Union
 
 import wx
 
-from BaseClasses import Tickable
+import Util
+from BaseClasses import Collidable, Interactable, Entity
 
 
-class LoadingBar(wx.Frame, Tickable):
+class LoadingBar(wx.Frame):
 
 	initDrag: Union[ Tuple[ int, int ], None ] = None
 	record: int = 0
@@ -55,8 +56,7 @@ class LoadingBar(wx.Frame, Tickable):
 			return
 		self.Show(False)
 		wx.GetApp().playing = False
-		wx.GetApp().units.clear()
-		wx.GetApp().gameStage.ClearWindows()
+		wx.GetApp().gameStage.ClearStage()
 		newRecord = self.score > self.record
 		msg = f'Final Score: {self.score}\nRecord: {self.record}'
 		if newRecord:
@@ -116,11 +116,15 @@ class LoadingBar(wx.Frame, Tickable):
 			self.UpdateColor()
 		elif evt.GetUnicodeKey() == 71:
 			self.godLike = not self.godLike
-			wx.GetApp().spawnParticle(  )
 		elif evt.GetUnicodeKey() == 75:
 			wx.GetApp().Close()
 		elif evt.GetUnicodeKey() == 76:
 			self.limit = not self.limit
+		elif evt.GetUnicodeKey() == 74:
+			wx.GetApp().distractionsEnabled = not wx.GetApp().distractionsEnabled
+		else:
+			import ProgressBar
+			ProgressBar.GetStage().SpawnUnit()
 
 	def OnMouseClick( self, evt: wx.MouseEvent ):
 		if evt.LeftIsDown():
@@ -134,9 +138,17 @@ class LoadingBar(wx.Frame, Tickable):
 			nextY = self.GetPosition().Get()[ 1 ] + ( evt.GetY() - self.initDrag[ 1 ] )
 			if ( nextY < 200 ) and self.limit:
 				return
+			import ProgressBar
 			nextRect = wx.Rect( nextX, nextY, 400, 60 )
-			for window in wx.GetApp().windows:
-				if window.GetRect().Intersects( nextRect ):
-					window.OnCollide( self.GetRect() )
-					return
+			# interact with the entities
+			for entity in ProgressBar.GetStage().entities:
+				if entity is None:
+					continue
+				# interactable entities
+				if isinstance( entity, Interactable ) and self.IsTouching( entity.GetBBox() ):
+					entity.OnTouch( self.GetRect() )
+				# collidable entities
+				if isinstance( entity, Collidable ) and entity.GetBBox().Intersects( nextRect ):
+					nextX, nextY = self.GetPosition().Get()[ 0 ], self.GetPosition().Get()[ 1 ]
+			# move to next coords
 			self.Move( wx.Point(nextX, nextY) )

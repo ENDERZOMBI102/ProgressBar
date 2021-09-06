@@ -2,27 +2,24 @@ from time import time
 
 import wx
 
-from BaseClasses import Drawable, Tickable
-from GameStage import GameStage
+from BaseClasses import Drawable, Tickable, Entity
 
 
-class Particle(Drawable, Tickable):
+class Particle(Entity, Drawable, Tickable):
 
 	pos: wx.Point
-	direction: int
 	speed: int
 	moveTimer: float
 
-	def __init__(self, pos: wx.Point, direction: int, speed: int):
+	def __init__(self, pos: wx.Point, speed: int):
 		self.pos = pos
-		self.direction = direction
 		self.speed = speed
 		self.moveTimer = time()
 
-	def OnDraw( self, stage: GameStage ):
+	def OnDraw( self, canvas: wx.WindowDC ):
 		pass
 
-	def OnTick( self ):
+	def OnTick( self, tickDelta: float ):
 		if time() - self.moveTimer > self.speed * 0.0020:
 			x, y = self.pos.Get()
 			self.pos = wx.Point( x + 0, y + 10 )

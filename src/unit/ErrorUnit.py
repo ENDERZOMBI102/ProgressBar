@@ -14,5 +14,5 @@ class ErrorUnit( UnitBase ):
 			behavior=behavior(self)
 		)
 
-	def OnBarTouch( self, bbox: wx.Rect ) -> None:
+	def OnCollide( self, bbox: wx.Rect ) -> None:
 		self.loadBar.EndGame()
